@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Parametric Heart (Canvas)</title>
+  <style>
+    body {
+      margin: 0;
+      background: black; /* Match turtle bgcolor("black") */
+      display: grid;
+      place-items: center;
+      height: 100vh;
+    }
+    canvas {
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="heartCanvas" width="800" height="800"></canvas>
+
+  <script>
+    // Parametric functions (matching the Python turtle version)
+    function heartA(k) {
+      return 15 * Math.sin(k) ** 3;
+    }
+    function heartB(k) {
+      return 12 * Math.cos(k)
+        - 5 * Math.cos(2 * k)
+        - 2 * Math.cos(3 * k)
+        - Math.cos(4 * k);
+    }
+
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Center the drawing on the canvas, scale to match turtle's * 20
+    const scale = 20;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    // Turtle-like draw settings
+    ctx.fillStyle = 'red';
+    ctx.strokeStyle = 'red';
+
+    // Animation variables
+    let i = 0;
+    const total = 2000; // Match the Python range(2000)
+
+    // Use a small dot radius similar to turtle's dot()
+    const dotRadius = 2;
+
+    function drawDot(x, y) {
+      ctx.beginPath();
+      ctx.arc(cx + x, cy - y, dotRadius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function animate() {
+      // Convert i to a radian step. Python used integers directly; we’ll map them to radians.
+      const k = i * 0.01; // Smooth progression; adjust for density
+
+      const x = heartA(k) * scale;
+      const y = heartB(k) * scale;
+
+      // Draw a red dot at the position
+      drawDot(x, y);
+
+      i++;
+      if (i < total) {
+        requestAnimationFrame(animate);
+      } else {
+        // Equivalent to turtle done(): drawing finished
+        // Optionally, draw a dot at origin like the final goto(0, 0) + dot()
+        drawDot(0, 0);
+      }
+    }
+
+    // Start fast, like speed(0)
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
